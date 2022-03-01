@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="样本编号" prop="infoId">
 <!--          <div class="inputCode" @click="handleInfoIdScan()" size="small" type="primary"> <i class="el-icon-full-screen"></i> <span>扫描样本编号</span></div>-->
-          <el-input placeholder="请输入样本编号" v-model="sample.infoId"></el-input>
+          <el-input placeholder="请输入样本编号" :disabled="true" v-model="sample.infoId"></el-input>
         </el-form-item>
       </el-form>
       <div class="bottom-next">

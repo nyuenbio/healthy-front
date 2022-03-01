@@ -31,5 +31,5 @@ new Vue({
 }).$mount('#app')
 
 // 移动端的console调试工具
-const VConsole = window.VConsole
-new VConsole()
+// const VConsole = window.VConsole
+// new VConsole()

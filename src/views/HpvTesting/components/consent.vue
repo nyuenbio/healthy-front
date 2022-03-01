@@ -35,6 +35,8 @@
       </p>
       <p>
         3.3由于个人差异，可能会造成取样失败而需要重新取样,需要您的配合。
+      </p>
+      <p>
         3.4检测结果属于个人隐私，受检者须妥善保管，以免资料泄露可能对个人及家庭造成不利影响。本机构将对该检测结果保密并依法保护受检者的隐私，但因受检者造成的个人信息外泄，本机构不承担连带责任。
       </p>
       <p>
@@ -95,7 +97,7 @@ export default {
   background-image: linear-gradient(to bottom,#FFFFFF,rgba(100,100,100,0.1));
 }
 .book {
-  height: 12rem;
+  height: 20rem;
   overflow-y: auto;
   text-overflow: ellipsis;
   padding: 1rem;

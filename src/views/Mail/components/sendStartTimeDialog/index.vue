@@ -60,17 +60,17 @@ export default {
         time = '一小时内'
       } else if (this.activeIndex === 0) {
         const hours = item.text.slice(0,2)
-        time = `${formatDate(new Date(),'yyyy-M-d')} ${hours}:00:00`
+        time = `${formatDate(new Date(),'yyyy-MM-dd')}T${hours}:00:00`
       }else if (this.activeIndex === 1) {
         const hours = item.text.slice(0,2)
         const tomorrow = new Date().getTime() + 60 * 60 * 24 *1000
-        time = `${formatDate(new Date(tomorrow),'yyyy-M-d')} ${hours}:00:00`
+        time = `${formatDate(new Date(tomorrow),'yyyy-MM-dd')}T${hours}:00:00`
       }else if (this.activeIndex === 2) {
         const hours = item.text.slice(0,2)
         const tomorrow = new Date().getTime() + 60 * 60 * 24 * 2 *1000
-        time = `${formatDate(new Date(tomorrow),'yyyy-M-d')} ${hours}:00:00`
+        time = `${formatDate(new Date(tomorrow),'yyyy-MM-dd')}T${hours}:00:00`
       }
-      console.log(time)
+      // console.log(time)
       this.time = time
     },
     submit() {
@@ -78,6 +78,7 @@ export default {
 
       } else {
         this.form.sendStartTimeText = this.time
+        console.log(this.form.sendStartTimeText)
       }
       this.show = false
     }

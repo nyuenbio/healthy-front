@@ -1,8 +1,12 @@
 <template>
   <div class="box">
-    <div class="agreement">
-      <span>采样教程</span>
-      <img style="width: 100%" src="~@/assets/images/logo.jpg" alt="">
+    <div>
+      <span class="title">采样教程</span>
+      <img style="width: 100%" src="~@/assets/hpv/collection.jpg" alt="">
+    </div>
+    <div>
+      <span class="title">视频教程</span>
+      <video style="width: 100%;object-fit: fill;" src="http://order.nyuen-group.com:8088/video/collectionHpv.mp4" controls="controls"></video>
     </div>
     <div class="bottom-next">
       <van-button @click="finish" class="button-next" block color="#f6aed0">
@@ -84,12 +88,18 @@ export default {
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 .button-next {
-  margin-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 100px;
   border-radius: 10px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+}
+.title{
+  display: inline-block;
+  font-weight: bolder;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 </style>

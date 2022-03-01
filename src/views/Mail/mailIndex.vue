@@ -44,19 +44,19 @@
           </div>
           <span>阅读并同意<span class="text-tips" @click="openAgreement">《电子运单契约条款》</span></span>
         </div>
-        <div class="confirm_button" @click="submit">
+        <div class="confirm_button" @click="submitConfirm">
           <span>提交</span>
         </div>
       </div>
       <ExpressType ref="ExpressType"></ExpressType>
       <PayMethod ref="PayMethod"></PayMethod>
       <SendStartTime ref="SendStartTime"></SendStartTime>
-      <Agreement ref="Agreement"></Agreement>
+      <Agreement :btn="btn" @change="btnTips" ref="Agreement"></Agreement>
     </div>
     <div class="empty" v-else>
       <van-empty
           class="custom-image"
-          image="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F18702291-e8ecd2f3c72a6c22.gif&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644646974&t=eefac1c3f013af29db93522b1766fa3a"
+          image="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.616pic.com%2Fys_bnew_img%2F00%2F02%2F79%2FNcGBJrnxlP.jpg&refer=http%3A%2F%2Fpic.616pic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648188768&t=ce9c5a5e8d740226a0291e7f16a47f38"
           description="下单成功，正在等待快递小哥来取货！"
       >
         <van-button round type="danger" @click="back" class="bottom-button">返回</van-button>
@@ -77,18 +77,40 @@ import {createOrderService, orderConfirmService} from "../../api/shunfeng";
 import {orderController} from "../../api/order";
 import {sampleRegister} from "../../api/sample";
 import {LogisticsController} from "../../api/logistics";
+import {JdB2cController} from "../../api/jd-b2c";
+
+// 立即执行版
+function debounce(func, wait) {
+  let timer;
+  return function () {
+    let context = this; // 这边的 this 指向谁?
+    let args = arguments; // arguments中存着e
+
+    if (timer) clearTimeout(timer);
+
+    let callNow = !timer;
+
+    timer = setTimeout(() => {
+      timer = null;
+    }, wait)
+
+    if (callNow) func.apply(context, args);
+  }
+}
+
+// 顺丰的gif动图 https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F18702291-e8ecd2f3c72a6c22.gif&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644646974&t=eefac1c3f013af29db93522b1766fa3a
 
 export default {
   data() {
     return {
       form: {},
-      sampleTag:{},
+      sampleTag: {},
       btn: 0,
       show: true,
-      cancel:{
-        mailNo:'',
-        sfOrderId:''
-      }
+      cancel: {
+        mailNo: '',
+        sfOrderId: ''
+      },
     }
   },
   components: {
@@ -104,45 +126,44 @@ export default {
     async init() {
       this.$store.commit('getOpenId')
       this.form = this.$store.state.MailForm
-      let beginTime = formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 90),'yyyy-MM-dd')
-      let endTime = formatDate(new Date(),'yyyy-MM-dd')
-      const data = {
-        beginTime: beginTime,
-        endTime: endTime,
-        openId: this.$store.state.openId,
-        platName: "",
-        productType: "",
-      }
-      const res = await LogisticsController.getLogistics(data)
-      const order = res.data
-      if (order.length !== 0) {
+      console.log('this.form.infoId', this.$store.state.HpvSample.infoId)
+      const infoId = this.$store.state.HpvSample.infoId
+      if (!infoId) return console.log('出错了，你不应该进来的')
+
+      const res = (await this.getData()).data[0]
+      console.log(res)
+      this.$store.state.HpvSample = res
+      if (res.department) {
         this.show = false
-        this.cancel.sfOrderId = order[0].sfOrderId
-        this.cancel.mailNo = order[0].mailNo
       } else {
         this.show = true
       }
     },
+    async getData() {
+      const infoId = this.$store.state.HpvSample.infoId
+      const res = await sampleRegister.getByInfoIdAndCai({infoId})
+      return res
+    },
     back() {
-      this.$router.push('/useProcess')
+      this.$router.push({name: 'useProcess', query: {infoId: this.$store.state.HpvSample.infoId}})
     },
     async cancelOrder() {
-      const mailNo = this.cancel.mailNo
-      const orderId = this.cancel.sfOrderId
-      const res = await orderConfirmService({mailNo,orderId})
-      if (res.code === 200 ){
+      const lwbNo = this.$store.state.HpvSample.department
+      const reason = '暂时先取消邮寄'
+      const res = await JdB2cController.cancelOrder({lwbNo, reason})
+      if (res.code === 200) {
         await this.getOrder()
         const openid = this.$store.state.openId
-        this.$store.state.HpvSample.department = '0'
+        this.$store.state.HpvSample.department = ''
         const change = {
-          department: '0',
-          infoId:this.$store.state.HpvSample.infoId
+          department: '',
+          infoId: this.$store.state.HpvSample.infoId
         }
         const updateData = {
-          'sampleregistertemp':change,
+          'sampleregistertemp': change,
           'order': this.order
         }
-        const res = await sampleRegister.updateSample(updateData,{openid})
+        const res = await sampleRegister.updateSample(updateData, {openid})
         Toast.success('快递取消成功')
         this.sampleTag.mail = '0'
         this.sampleTag.sfID = ''
@@ -178,25 +199,28 @@ export default {
     },
     async getOrder() {
       const infoId = this.$store.state.HpvSample.infoId
-      const  res = await orderController.getOrderByInfoId({infoId})
+      const res = await orderController.getOrderByInfoId({infoId})
       this.order = res.data[0]
     },
-    async updateState() {
+    async updateState(mailNo) {
       await this.getOrder()
       const openid = this.$store.state.openId
-      this.$store.state.HpvSample.department = '1'
+      this.$store.state.HpvSample.department = mailNo
       const change = {
-        department: '1',
-        infoId:this.$store.state.HpvSample.infoId
+        department: mailNo,
+        infoId: this.$store.state.HpvSample.infoId
       }
       const updateData = {
-        'sampleregistertemp':change,
+        'sampleregistertemp': change,
         'order': this.order
       }
-      const res = await sampleRegister.updateSample(updateData,{openid})
+      const res = await sampleRegister.updateSample(updateData, {openid})
     },
+    submitConfirm: debounce(function () {
+      console.log('为了防抖')
+      this.submit()
+    }, 2000),
     async submit() {
-      console.log(this.form)
       if (this.form.jAddress === '' || this.form.jContact === '' || this.form.jTel === '') {
         return Toast.fail('请完善寄货人信息')
       } else if (this.form.dAddress === '' || this.form.dContact === '' || this.form.dTel === '') {
@@ -206,26 +230,53 @@ export default {
       }
       if (this.form.sendStartTimeText === '一小时内') {
         const time = new Date().getTime() + 60 * 60 * 1000
-        const sendStartTime = formatDate(new Date(time), 'yyyy-M-dd hh:mm:ss')
+        const sendStartTime = formatDate(new Date(time), 'yyyy-MM-ddThh:mm:ss')
         this.form.sendStartTime = sendStartTime
       } else {
-        this.form.sendStartTime = this.sendStartTimeText
+        console.log(this.form.sendStartTimeText)
+        this.form.sendStartTime = this.form.sendStartTimeText
       }
       const localOpenId = localStorage.getItem('openId')
       const openId = JSON.parse(localOpenId).content
       this.form.openId = openId
-      const orderXmlVo = this.form
-      const res = await createOrderService(orderXmlVo)
-      if (res.code === 200) {
-        Toast.success('快递下单成功')
-        this.sampleTag.mail = '1'
-        this.sampleTag.sfID = res.data
-        this.sampleTag.mailTime = new Date().getTime()
-        localStorage.setItem('sampleTag',JSON.stringify(this.sampleTag))
-        await this.updateState()
+      const JD = {
+        // addedService: "0",
+        detPlatCode: 107,
+        detPlatName: '京东物流',
+        expressType: 1,
+        expressTypeName: "京东特惠送",
+        goods: 'HPV样本',
+        goodsType: 1,
+        packageCount: 1,
+        payMethodName: '月结',
+        productType: 268,
+        receiverAddress: this.form.dAddress,
+        receiverCompany: this.form.dCompany,
+        receiverMobile: this.form.dTel,
+        receiverName: this.form.dContact,
+        remark: '',
+        openId: this.$store.state.openId,
+        detTypeCode: 110,
+        detTypeName: '样本物流',
+        detWayCode: 116,
+        detWayName: '移动端端下单',
+        senderAddress: this.form.jAddress,
+        senderCompany: this.form.jCompany,
+        senderMobile: this.form.jTel,
+        senderName: this.form.jContact,
+        infoId: this.$store.state.HpvSample.infoId,
+        pickUpEndTime: formatDate(new Date(new Date(this.form.sendStartTime).getTime() + 1000 * 60 * 60), 'yyyy-MM-dd hh:mm:ss'),
+        pickUpStartTime: this.form.sendStartTime.replace('T', ' '),
+      }
+      console.log(JD)
+      const createOrderRes = await JdB2cController.createOrder(JD)
+      if (createOrderRes.code === 200) {
+        Toast.success('京东快递下单成功')
+        const arr = createOrderRes.data.split('&&')
+        await this.updateState(arr[0])
         this.show = false
       } else {
-        Toast.fail(res.message)
+        Toast.fail('下单失败')
       }
     }
   }
@@ -397,11 +448,13 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.empty{
+
+.empty {
   background: #ffffff;
   height: 100vh;
   padding-top: 100px;
 }
+
 .bottom-button {
   margin-top: 50px;
   background: #409eff;
@@ -409,11 +462,14 @@ export default {
   width: 160px;
   height: 40px;
 }
-/deep/.van-empty__bottom {
+
+/deep/ .van-empty__bottom {
   margin-top: 24px;
   display: flex;
   flex-direction: column;
 }
+
+
 .bottom-button-cancel {
   margin-top: 40px;
   width: 160px;

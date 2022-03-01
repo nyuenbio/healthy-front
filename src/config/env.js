@@ -19,9 +19,11 @@
 const env = process.env
 let baseUrl = ''
 let appid = ''
+let baseUrlNew = ''
 
 appid = 'wx4cefd44642234d58' // 测试公众号的appid
 baseUrl = 'http://weixin.nyuen-group.com:8100' // 测试公众号的接口
+baseUrlNew = 'http://system.nyuen-group.com:7100' // 测试公众号的接口
 // baseUrl = 'http://192.168.10.23:7100' // 本地开发的接口
 
 
@@ -66,5 +68,6 @@ export {
   // previewIp,
   previewPDFUrl,
   previewInvoiceUrl,
-  previewReserveImgUrl
+  previewReserveImgUrl,
+  baseUrlNew
 }

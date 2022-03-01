@@ -152,28 +152,11 @@ export default {
       if (this.$store.state.HpvSample.adminRemarks === '1') {    // 如果adminRemarks === 1 则证明采样有了
         this.sampleTag.collection = '1'
       }
-      if (this.$store.state.HpvSample.department === '1') {    // 如果department === 1 则证明邮寄也完成了
+      if (this.$store.state.HpvSample.department  && this.$store.state.HpvSample.department !== '0') {    // 如果department === 1 则证明邮寄也完成了
         this.sampleTag.mail = '1'
+      } else {
+        this.sampleTag.mail = '0'
       }
-      // const  have = arr.filter(item => (item.sampleregistertemp.state1 !== 217))
-      // if (have.length === 0){
-      //   console.log('此人没有已经录的样本  请注意')
-      // } else {
-      //   console.log('此人有多个已经录的样本  请注意')
-      //   this.sampleTag.infoId = have[0].sampleregistertemp.infoId
-      //   const infoId = have[0].sampleregistertemp.infoId
-      //   const userName = have[0].sampleregistertemp.userName
-      //   const res =  await sampleRegister.getByInfoId({infoId,userName}) // 通过样本编号和姓名 获取 受检者的所有样本信息
-      //   this.$store.state.HpvSample = res.data[0]
-      //   this.$store.state.hpvInfoId = this.sampleTag.infoId   // state.hpvInfoId 赋值 证明录入过样本
-      //   if (this.$store.state.HpvSample.adminRemarks === '1') {    // 如果adminRemarks === 1 则证明采样有了
-      //     this.sampleTag.collection = '1'
-      //   }
-      //   if (this.$store.state.HpvSample.department === '1') {    // 如果department === 1 则证明邮寄也完成了
-      //     this.sampleTag.mail = '1'
-      //   }
-      //   console.log(this.$store.state.HpvSample)
-      // }
     },
     async getData() {
       this.$store.commit('getOpenId')
