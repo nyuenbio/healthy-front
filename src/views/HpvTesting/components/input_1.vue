@@ -14,7 +14,6 @@
           </el-input>
         </el-form-item>
         <el-form-item label="样本编号" prop="infoId">
-<!--          <div class="inputCode" @click="handleInfoIdScan()" size="small" type="primary"> <i class="el-icon-full-screen"></i> <span>扫描样本编号</span></div>-->
           <el-input placeholder="请输入样本编号" :disabled="true" v-model="sample.infoId"></el-input>
         </el-form-item>
       </el-form>
@@ -77,7 +76,7 @@ export default {
     await this.getInfoId()
     await this.changeTime()
     await this.getOpenId()
-    await this.loadWXAPI()
+    // await this.loadWXAPI()
   },
   methods: {
     getInfoId() {
@@ -92,8 +91,8 @@ export default {
       this.$store.commit('getOpenId')
       this.openId = this.$store.state.openId
       const openId = this.openId
-      const ticketRes = await getAccseToken({openId})
-      this.ticket = ticketRes.data.ticket
+      // const ticketRes = await getAccseToken({openId})
+      // this.ticket = ticketRes.data.ticket
     },
     getQueryString (name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -211,15 +210,15 @@ export default {
   transform: translate(0,5%);
 }
 
-/deep/ .el-form-item__label {
+.little_box >>> .el-form-item__label {
   font-size: 0.9em;
   font-weight: 600;
 }
 
-/deep/ .el-date-editor.el-input, .el-date-editor.el-input__inner {
+.little_box >>> .el-date-editor.el-input, .el-date-editor.el-input__inner {
   width: 100%;
 }
-/deep/ .el-input.is-disabled .el-input__inner {
+.little_box >>> .el-input.is-disabled .el-input__inner {
   background-color: #ffffff;
   border-color: #E4E7ED;
   color: #C0C4CC;

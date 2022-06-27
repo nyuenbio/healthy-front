@@ -136,17 +136,17 @@ export default {
   padding-top: 40px;
   height: auto;
 }
-/deep/.van-tab {
+.box >>>.van-tab {
   font-size: 0.95em;
 }
 .disable{
   pointer-events: none;
 }
-/deep/ .van-tab--active {
+.box >>> .van-tab--active {
   color: #000000;
   font-weight: 600;
 }
-/deep/.van-tabs__line {
+.box >>>.van-tabs__line {
   position: absolute;
   bottom: 15px;
   left: 0;
