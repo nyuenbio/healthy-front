@@ -22,7 +22,7 @@ const MailForm = {
         // 下面是为了显示需要自定义的字段
         payMethodText: '快递到付', // 默认快递到付 1:寄方付,2:收方付,3:第三方付
         isDocallText: '上门取件', // 默认上门取件
-        expressTypeText:'顺丰特惠(陆运)', // 默认上门取件
+        expressTypeText:'京东特惠送', // 默认上门取件
 
         // 下面是拼接地址所需要的临时字段
         province: '',

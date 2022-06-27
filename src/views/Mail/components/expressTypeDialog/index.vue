@@ -11,7 +11,7 @@ export default {
     return{
       form:{},
       show: false,
-      actions: [{ name: '顺丰特惠(陆运)',value:'1' }, { name: '标准快递(空运)',value:'2' }],
+      actions: [{ name: '京东特惠送',value:'1' }],
     }
   },
   created() {

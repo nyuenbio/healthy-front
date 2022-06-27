@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div id="app" v-loading="!isShow">
+    <router-view v-if="isShow" />
   </div>
 </template>
 
@@ -12,15 +12,16 @@ import {appid} from "@/config/env";
 export default {
   data() {
     return{
+      isShow: false
     }
   },
   async created() {
-    if (this.localOpenIdTrue()) return
+    if (this.localOpenIdTrue()) return this.isShow = true
     if (!this.getQueryString('code')) {
       await this.wxAuthRedirect()
     }
-    console.log('created1')
     await this.getOpenId()
+    this.isShow = true
   },
   methods:{
     localOpenIdTrue() {
@@ -32,7 +33,6 @@ export default {
       }
     },
     async getOpenId() {
-      console.log('getOpenId')
       const localOpenId = localStorage.getItem('openId')
       if (localOpenId) {
         // console.log('通过本地缓存获取的openId')

@@ -118,6 +118,7 @@ export default {
     },
     async getProcess() {   // 获取自己的订单 证明自己有正在处理的订单 通过样本编号 比对  确定是否是自己的样本 是的话 展示  不是的话  下一步
       const infoId = this.$route.query.infoId || this.$store.state.hpvInfoId
+      if(!infoId) return Dialog.alert({title: '温馨提醒',message: `没有样本编号供绑定！`,})
       const arr = await this.getData()   // 获取到自己的订单
       console.log(arr)
       const resLife = arr.find(item => item.sampleregistertemp.infoId === infoId)

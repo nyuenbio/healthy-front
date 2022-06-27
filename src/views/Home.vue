@@ -30,14 +30,16 @@
 
 <script>
 import {sampleRegister} from "@/api/sample";
-import {Dialog} from 'vant'
+import {Dialog, Toast} from 'vant'
+import {baseUrlAddress} from "@/config/env.js";
 
 export default {
   name: "home",
   data() {
     return{
       step:0,
-      infoId:''
+      infoId:'',
+      baseUrlAddress
     }
   },
   mounted() {
@@ -45,7 +47,18 @@ export default {
   },
   methods:{
     async checkInfoIdSqlBox() {
-      const infoId = this.$route.query.infoId
+      let infoId = ''
+      let reg = /[_]/im;
+      const test = reg.test(this.$route.query.infoId)
+      if (!test) {
+        infoId = this.$route.query.infoId
+      } else if (test) {
+        const arr = this.$route.query.infoId.split('_')
+        infoId = arr[1]
+      } else {
+        Toast.fail('样本编号获取有误')
+      }
+      if(!infoId) return 
       const checkInfoIdSql = await this.checkInfoid(infoId)
       if (!checkInfoIdSql) {
         Dialog.alert({
@@ -56,7 +69,7 @@ export default {
         });
       } else {
       }
-      this.infoId = this.$route.query.infoId
+      this.infoId = infoId
     },
     async checkInfoid(infoId) { // 这个是发起请求，和数据库中的进行比对
       const res = await sampleRegister.getInfo(infoId)
@@ -75,7 +88,9 @@ export default {
       }
     },
     toReport() {
-      window.location.href = 'http://test.nhwa-hexin.com/mobile/order/reportProgress.html'
+      console.log(baseUrlAddress)
+      let url = baseUrlAddress + "mobile/order/reportProgress.html"
+      window.location.href = url
     },
     toMine() {
       this.$router.push('/orderList')

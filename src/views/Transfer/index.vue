@@ -3,6 +3,7 @@
     <div v-if="!show">
       <div class="QrCode">
         <img class="code" :src="url + value" alt="">
+<!--        <img class="code" src="@/assets/images/ny_qrcode.jpg" alt="">-->
       </div>
       <div class="tips">
         <p>尊敬的恩元女神:</p>
@@ -18,13 +19,14 @@
 <script>
 import {getAccseToken, getUserInfo,sendWxtplMesByOpenId} from "../../api/wxControl";
 import {getWXPublicQRCode} from "../../api/wxPublic";
+import {imageUrl} from "../../config/env";
 
 export default {
   name: "index",
   data() {
     return {
       show:true,
-      url: 'http://order.nyuen-group.com:8100/api-wechat/sampleRegister/preview?filePath=',
+      url: imageUrl,
       value : '',
       token: '',
       openId: '',
@@ -51,68 +53,69 @@ export default {
       const res = await getWXPublicQRCode({wxAccessToken,codeType,sceneStr})
       console.log(res)
       this.value = res
+    },
+    async getUser() {
+      const wxInvoiceVo = {
+        accessToken: this.token,
+        openId: this.openId
+      }
+      const res = await getUserInfo(wxInvoiceVo)
+      const data = JSON.parse(res.data)
+      console.log('data',data)
+      return data.subscribe
+    },
+    setTimer() {
+      let timer
+      timer = setTimeout(async () => {
+        const type = await this.getUser()
+        if (type === 1) {
+          console.log('关注了，跳转')
+          await this.sendWxMessage()
+          await this.$router.push({
+            name: 'Home',
+            query: {product: this.$route.query.product, infoId: this.$route.query.infoId}
+          })
+        } else {
+          this.show = true
+          this.setTimer()
+          console.log('没关注，先关注')
+        }
+        clearTimeout(timer)
+        console.log(timer)
+      },1000)
+    },
+    async sendWxMessage() { // 发送微信公众号信息
+      const openId = this.$store.state.openId
+      let _keyword1 = 'HPV的消息发送'
+      let _keyword2 = '测试发消息'
+      const data = {
+        openId,
+        proName: '收样模块PC端',
+        templateName: '收样成功通知',
+        templateValue: JSON.stringify({
+          first: `尊敬的用户，您的样本已完成收样`, // 标题
+          keyword1: `${_keyword1}`, //
+          keyword2: `${_keyword2}`, //
+          remark: `测试测试是`
+        }),
+      }
+      const sendWxtplMesByOpenIdRes = await sendWxtplMesByOpenId(data).catch(() => false)
+      if (!sendWxtplMesByOpenIdRes) return
+    },
+    async judge() {
+      const type = await this.getUser()
+      console.log(type)
+      if (type === 1) {
+        console.log('关注了，跳转')
+        await this.$router.push({
+          name: 'Home',
+          query: {product: this.$route.query.product, infoId: this.$route.query.infoId}
+        })
+      } else {
+        this.show = true
+        console.log('没关注，先关注')
+      }
     }
-
-    // async getUser() {
-    //   const wxInvoiceVo = {
-    //     accessToken: this.token,
-    //     openId: this.openId
-    //   }
-    //   const res = await getUserInfo(wxInvoiceVo)
-    //   const data = JSON.parse(res.data)
-    //   return data.subscribe
-    // },
-    // setTimer() {
-    //   let timer
-    //   timer = setTimeout(async () => {
-    //     const type = await this.getUser()
-    //     if (type === 1) {
-    //       console.log('关注了，跳转')
-    //       await this.sendWxMessage()
-    //       await this.$router.push({
-    //         name: 'Home',
-    //         query: {product: this.$route.query.product, infoId: this.$route.query.infoId}
-    //       })
-    //     } else {
-    //       this.show = true
-    //       this.setTimer()
-    //       console.log('没关注，先关注')
-    //     }
-    //     clearTimeout(timer)
-    //     console.log(timer)
-    //   },1000)
-    // },
-    // async sendWxMessage() { // 发送微信公众号信息
-    //   const openId = 'o6HT1wJw1Zx_zEBiBoMSQw7EtwHo'
-    //   let _keyword1 = 'infoId'
-    //   let _keyword2 = '测试发消息'
-    //   const data = {
-    //     openId,
-    //     proName: '收样模块PC端',
-    //     templateName: '收样成功通知',
-    //     templateValue: JSON.stringify({
-    //       first: `尊敬的用户，您的样本已完成收样`, // 标题
-    //       keyword1: `${_keyword1}`, //
-    //       keyword2: `${_keyword2}`, //
-    //       remark: `测试测试是`
-    //     }),
-    //   }
-    //   const sendWxtplMesByOpenIdRes = await sendWxtplMesByOpenId(data).catch(() => false)
-    //   if (!sendWxtplMesByOpenIdRes) return
-    // },
-    // async judge() {
-    //   const type = await this.getUser()
-    //   if (type === 1) {
-    //     console.log('关注了，跳转')
-    //     await this.$router.push({
-    //       name: 'Home',
-    //       query: {product: this.$route.query.product, infoId: this.$route.query.infoId}
-    //     })
-    //   } else {
-    //     this.show = true
-    //     console.log('没关注，先关注')
-    //   }
-    // }
   }
 }
 </script>

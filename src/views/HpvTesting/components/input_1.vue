@@ -42,7 +42,7 @@ export default {
     const validateInfoId = async (rule, value, callback) => {
       const checkInfoIdSql = await this.checkInfoid(value)
       console.log(checkInfoIdSql)
-      const infoIdReg = /^[A-Za-z0-9]{10,14}$/
+      const infoIdReg = /^[A-Za-z0-9]{10,16}$/
       if (!infoIdReg.test(value)) {
         callback(new Error('样本编号格式不正确'));
       } else if (!checkInfoIdSql) {

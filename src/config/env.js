@@ -20,21 +20,36 @@ const env = process.env
 let baseUrl = ''
 let appid = ''
 let baseUrlNew = ''
+let imageUrl= ''
+let baseUrlAddress= ''
 
-appid = 'wx4cefd44642234d58' // 测试公众号的appid
-baseUrl = 'http://weixin.nyuen-group.com:8100' // 测试公众号的接口
-baseUrlNew = 'http://system.nyuen-group.com:7100' // 测试公众号的接口
+// appid = 'wx4cefd44642234d58' // 测试公众号的appid
+// baseUrl = 'http://weixin.nyuen-group.com:8100' // 测试公众号的接口
+// baseUrlNew = 'http://system.nyuen-group.com:7100' // 测试公众号的接口
+// imageUrl = 'http://order.nyuen-group.com:8100/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
 // baseUrl = 'http://192.168.10.23:7100' // 本地开发的接口
 
 
-// if (env.NODE_ENV === 'development') { // 开发环境
-//   appid = 'wx4cefd44642234d58' // 测试公众号的appid
-//   // baseUrl = 'http://192.168.10.23:7100' // 本地开发的接口
-//   baseUrl = 'http://weixin.nyuen-group.com:8100' // 可能连本地，可能连服务器的测试公众号的接口
-// } else { // 正式环境
-//   appid = 'wx07842cc183956d11' // 正式公众号的appid
-//   baseUrl = 'http://weixin.nyuen-group.com:8000' // 正式公众号的接口
-// }
+// appid = 'wx07842cc183956d11' // 正式公众号的appid
+// baseUrl = 'http://weixin.nyuen-group.com:8000' // 正式公众号的接口
+// baseUrlNew = 'http://weixin.nyuen-group.com:7100' // 正式项管后台接口
+// imageUrl = 'http://order.nyuen-group.com:8000/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
+
+
+if (env.NODE_ENV === 'development') { // 开发环境
+  appid = 'wx4cefd44642234d58' // 测试公众号的appid
+  // baseUrl = 'http://192.168.10.23:7100' // 本地开发的接口
+  baseUrl = 'http://weixin.nyuen-group.com:8100' // 可能连本地，可能连服务器的测试公众号的接口
+  baseUrlNew = 'http://system.nyuen-group.com:7100' // 测试项管后台接口
+  imageUrl = 'http://order.nyuen-group.com:8100/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
+  baseUrlAddress = 'http://test.nhwa-hexin.com/'
+} else { // 正式环境
+  appid = 'wx07842cc183956d11' // 正式公众号的appid
+  baseUrl = 'http://weixin.nyuen-group.com:8000' // 正式公众号的接口
+  baseUrlNew = 'http://weixin.nyuen-group.com:7100' // 正式项管后台接口
+  imageUrl = 'http://order.nyuen-group.com:8000/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
+  baseUrlAddress = 'http://gene.nhwa-hexin.com/'
+}
 
 const iconfontVersion = ['567566_r22zi6t8noas8aor']
 const iconfontUrl = `//at.alicdn.com/t/font_$key.css`
@@ -69,5 +84,7 @@ export {
   previewPDFUrl,
   previewInvoiceUrl,
   previewReserveImgUrl,
-  baseUrlNew
+  baseUrlNew,
+  imageUrl,
+  baseUrlAddress
 }

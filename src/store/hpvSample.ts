@@ -22,7 +22,7 @@ const HpvSample = {
         sampleType: '宫颈分泌物', // 样本种类
         organizeName: 'HPV', // 医院名称
         hospital: 'HPV', // 医院名称(新增，解决数据缺失的问题)
-        organizeId: '3000',
+        organizeId: '4648',
         sampleDutyNameA: '恩元医检所', // 送检医生姓名
         diagnosis: '', // 诊断结果
         _diagnosisLocalImgs: [],

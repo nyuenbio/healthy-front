@@ -72,6 +72,7 @@ import PayMethod from './components/payMethodDiaolog/index'
 import SendStartTime from './components/sendStartTimeDialog/index'
 import Agreement from './components/agreementDialog/index'
 import {Toast} from "vant";
+import { Dialog } from 'vant';
 import {formatDate} from "../../utils/dateTime";
 import {createOrderService, orderConfirmService} from "../../api/shunfeng";
 import {orderController} from "../../api/order";
@@ -276,7 +277,7 @@ export default {
         await this.updateState(arr[0])
         this.show = false
       } else {
-        Toast.fail('下单失败')
+        Dialog({ message: createOrderRes.message });
       }
     }
   }
