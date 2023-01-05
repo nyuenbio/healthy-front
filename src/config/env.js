@@ -33,7 +33,7 @@ if (env.NODE_ENV === 'development') { // 开发环境
   // baseUrl = 'http://192.168.10.23:7100' // 本地开发的接口
   baseUrl = 'http://system.nyuen-group.com:8100' // 可能连本地，可能连服务器的测试公众号的接口
   baseUrlNew = 'http://system.nyuen-group.com:7100' // 测试项管后台接口
-  imageUrl = 'http://order.nyuen-group.com:8100/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
+  imageUrl = 'http://system.nyuen-group.com:8100/api-wechat/sampleRegister/preview?filePath=' // 测试项管后台接口
   baseUrlAddress = 'http://gene.nhwa-hexin.com/'
 } else { // 正式环境
   appid = 'wx07842cc183956d11' // 正式公众号的appid
